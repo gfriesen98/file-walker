@@ -1,0 +1,14 @@
+{
+  "name": "file-crawler",
+  "version": "1.0.0",
+  "description": "crawls a folder given and gathers filenames",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "garett f",
+  "license": "ISC",
+  "dependencies": {
+    "yargs": "^17.0.1"
+  }
+}
