@@ -37,9 +37,9 @@ function walk(dir) {
       }
     }
   });
-  
+
   //stdout print the results.
-  array.forEach(n => console.log(n));
+  array.forEach(n => console.log(JSON.stringify(n)));
 }
 
 walk(options.folder);
