@@ -21,7 +21,7 @@ const path = require('path');
 //set up arguments
 const options = args.usage("Usage: -f <starting folder>")
   .option("t",
-    { alias: "type", describe: "Select type movie|roms|images", type: "string", demandOption: true })
+    { alias: "type", describe: "Select type movie|roms|any", type: "string", demandOption: true })
   .option("f",
     { alias: "folder", describe: "Starting folder", type: "string", demandOption: true })
   .argv;
@@ -87,12 +87,12 @@ function walkMovies(dir) {
   array.forEach(n => console.log(JSON.stringify(n)));
 }
 
-function walkImages(dir) {
+function walkAny(dir) {
   const array = [];
   fs.readdirSync(dir).forEach(file => {
     let fullpath = path.join(dir, file);
     if (fs.lstatSync(fullpath).isDirectory()) {
-      walkImages(fullpath);
+      walkAny(fullpath);
     } else {
       const template = {
         "name": path.basename(path.dirname(fullpath)),
@@ -109,6 +109,6 @@ if (options.type === 'movie') {
   walkMovies(options.folder);
 } else if (options.type === 'rom') {
   walkRoms(options.folder);
-} else if (options.type === 'images') {
-  walkImages(options.folder);
+} else if (options.type === 'any') {
+  walkAny(options.folder);
 }
