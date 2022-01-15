@@ -21,7 +21,7 @@ const path = require('path');
 //set up arguments
 const options = args.usage("Usage: -f <starting folder>")
   .option("t",
-    { alias: "type", describe: "Select type 'movie' or 'roms'", type: "string", demandOption: true })
+    { alias: "type", describe: "Select type movie|roms|images", type: "string", demandOption: true })
   .option("f",
     { alias: "folder", describe: "Starting folder", type: "string", demandOption: true })
   .argv;
@@ -41,7 +41,7 @@ function getFileSize(file) {
  * Walks through all files in a given directory, and files in subdirectories of the directory
  * @param {string} dir starting directory
  */
-function walkRom(dir) {
+function walkRoms(dir) {
   const array = [];
   fs.readdirSync(dir).forEach(file => {
     let fullpath = path.join(dir, file);
@@ -52,7 +52,7 @@ function walkRom(dir) {
         "category": path.basename(path.dirname(fullpath)),
         "name": (fullpath.substring(fullpath.lastIndexOf('/')+1).replace(/\.[^/.]+$/, "")).replaceAll('_', ' '),
         "path": fullpath, 
-        "fileSize": getFileSize(fullpath)
+        "filesize": getFileSize(fullpath)
       };
       array.push(obj);
     }
@@ -64,7 +64,7 @@ function walkRom(dir) {
  * Walks through all files in a given directory, and files in subdirectories of the directory/
  * @param {*} dir starting directory
  */
-function walkMovie(dir) {
+function walkMovies(dir) {
   const array = [];
   fs.readdirSync(dir).forEach(file => {
     let fullpath = path.join(dir, file);
@@ -77,7 +77,7 @@ function walkMovie(dir) {
         const template = { 
           "name": path.basename(path.dirname(fullpath)), 
           "path": fullpath,
-          "fileSize": getFileSize(fullpath)
+          "filesize": getFileSize(fullpath)
         };
         array.push(template);
       }
@@ -87,8 +87,28 @@ function walkMovie(dir) {
   array.forEach(n => console.log(JSON.stringify(n)));
 }
 
+function walkImages(dir) {
+  const array = [];
+  fs.readdirSync(dir).forEach(file => {
+    let fullpath = path.join(dir, file);
+    if (fs.lstatSync(fullpath).isDirectory()) {
+      walkImages(fullpath);
+    } else {
+      const template = {
+        "name": path.basename(path.dirname(fullpath)),
+        "path": fullpath,
+        "filesize": getFileSize(fullpath)
+      };
+      array.push(template);
+    }
+  });
+  array.forEach(n => console.log(JSON.stringify(n)));
+}
+
 if (options.type === 'movie') {
-  walkMovie(options.folder);
+  walkMovies(options.folder);
 } else if (options.type === 'rom') {
-  walkRom(options.folder);
+  walkRoms(options.folder);
+} else if (options.type === 'images') {
+  walkImages(options.folder);
 }
